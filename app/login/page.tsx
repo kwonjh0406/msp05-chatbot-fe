@@ -1,7 +1,6 @@
 "use client"
 
 import { Button } from "@/components/ui/button"
-import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import Link from "next/link"
@@ -9,49 +8,67 @@ import { ArrowLeft } from "lucide-react"
 
 export default function LoginPage() {
     return (
-        <div className="flex min-h-screen items-center justify-center bg-white dark:bg-zinc-950 p-4">
-            <Card className="w-full max-w-md border-none shadow-none bg-transparent">
-                <CardHeader className="space-y-1 px-0">
-                    <Link href="/" className="flex items-center text-sm text-zinc-400 hover:text-zinc-800 transition-colors mb-6">
+        <div className="flex min-h-screen flex-col items-center justify-center bg-white dark:bg-zinc-950 p-4">
+            <div className="w-full max-w-sm space-y-10"> {/* 간격 넓게 */}
+                {/* 헤더 영역 */}
+                <div className="flex flex-col items-center text-center space-y-2">
+                    {/* 뒤로가기 링크 - 상단에 배치 */}
+                    <Link href="/" className="flex items-center text-sm text-zinc-400 hover:text-zinc-800 transition-colors mb-4">
                         <ArrowLeft className="mr-2 h-4 w-4" />
-                        Back to Chat
+                        채팅으로 돌아가기
                     </Link>
-                    <CardTitle className="text-2xl font-semibold tracking-tight">Welcome back</CardTitle>
-                    <CardDescription className="text-zinc-500">
-                        Enter your email to sign in to your account
-                    </CardDescription>
-                </CardHeader>
-                <CardContent className="space-y-4 px-0">
-                    <div className="space-y-2">
-                        <Label htmlFor="email" className="text-zinc-600 font-normal">Email</Label>
-                        <Input
-                            id="email"
-                            type="email"
-                            placeholder="name@example.com"
-                            required
-                            className="bg-zinc-50 border-zinc-100 focus-visible:ring-zinc-200 focus-visible:ring-offset-0 h-11"
-                        />
+                    <h1 className="text-2xl font-bold tracking-tight text-zinc-900 dark:text-zinc-100">
+                        로그인
+                    </h1>
+                    <p className="text-sm text-zinc-500 dark:text-zinc-400">
+                        계정에 로그인하세요
+                    </p>
+                </div>
+
+                {/* 폼 영역 */}
+                <form className="space-y-5"> {/* 입력 필드 간 간격 조정 */}
+                    <div className="space-y-4">
+                        <div className="space-y-2">
+                            <Label htmlFor="email" className="sr-only">이메일</Label>
+                            <Input
+                                id="email"
+                                type="email"
+                                placeholder="이메일 주소"
+                                required
+                                // 스타일: 채팅창 입력바와 유사하게. 배경색 살짝 주고, 테두리 연하게, 라운딩 넉넉하게.
+                                className="h-12 border-zinc-200 bg-zinc-50 px-4 text-base placeholder:text-zinc-400 focus-visible:ring-1 focus-visible:ring-zinc-900 focus-visible:ring-offset-0 dark:border-zinc-800 dark:bg-zinc-900 dark:focus-visible:ring-zinc-400 rounded-2xl shadow-sm"
+                            />
+                        </div>
+                        <div className="space-y-2">
+                            <Label htmlFor="password" className="sr-only">비밀번호</Label>
+                            <Input
+                                id="password"
+                                type="password"
+                                placeholder="비밀번호"
+                                required
+                                className="h-12 border-zinc-200 bg-zinc-50 px-4 text-base placeholder:text-zinc-400 focus-visible:ring-1 focus-visible:ring-zinc-900 focus-visible:ring-offset-0 dark:border-zinc-800 dark:bg-zinc-900 dark:focus-visible:ring-zinc-400 rounded-2xl shadow-sm"
+                            />
+                        </div>
                     </div>
-                    <div className="space-y-2">
-                        <Label htmlFor="password" className="text-zinc-600 font-normal">Password</Label>
-                        <Input
-                            id="password"
-                            type="password"
-                            required
-                            className="bg-zinc-50 border-zinc-100 focus-visible:ring-zinc-200 focus-visible:ring-offset-0 h-11"
-                        />
-                    </div>
-                </CardContent>
-                <CardFooter className="flex flex-col gap-4 px-0">
-                    <Button className="w-full h-11 bg-black hover:bg-zinc-800 text-white font-normal text-base shadow-none">Sign In</Button>
-                    <div className="text-center text-sm text-zinc-500">
-                        Don&apos;t have an account?{" "}
-                        <Link href="/signup" className="underline hover:text-zinc-800">
-                            Sign up
+
+                    <Button
+                        type="submit"
+                        className="w-full h-12 text-base font-medium bg-zinc-900 text-white hover:bg-zinc-800 dark:bg-white dark:text-zinc-900 hover:opacity-90 transition-opacity rounded-full shadow-none"
+                    >
+                        로그인
+                    </Button>
+                </form>
+
+                {/* 하단 링크 */}
+                <div className="text-center">
+                    <p className="text-sm text-zinc-500 dark:text-zinc-400">
+                        계정이 없으신가요?{" "}
+                        <Link href="/signup" className="font-semibold text-zinc-900 hover:underline dark:text-zinc-100">
+                            회원가입
                         </Link>
-                    </div>
-                </CardFooter>
-            </Card>
+                    </p>
+                </div>
+            </div>
         </div>
     )
 }

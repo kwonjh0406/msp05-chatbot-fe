@@ -1,7 +1,11 @@
+/* 전역 스타일 파일: Tailwind CSS v4 설정 및 디자인 토큰을 정의합니다. */
+
 @import "tailwindcss";
 
 @plugin "tailwindcss-animate";
 
+/* Tailwind CSS v4 다크모드 커스텀 변형: .dark 클래스가 부모에 있을 때 적용됩니다. */
+/* CSS 린터 경고는 무시해도 됩니다 - Tailwind v4의 정상적인 문법입니다. */
 @custom-variant dark (&:is(.dark *));
 
 :root {
@@ -127,6 +131,14 @@
       height: 0;
     }
   }
+
+  @keyframes pulse {
+    50% {
+      opacity: 0.5;
+    }
+  }
+
+  --animate-pulse-slow: pulse 3s cubic-bezier(0.4, 0, 0.6, 1) infinite;
 }
 
 @layer base {
