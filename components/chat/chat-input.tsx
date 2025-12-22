@@ -1,47 +1,50 @@
-import { Button } from "@/components/ui/button"
-import { Textarea } from "@/components/ui/textarea"
-import { ArrowUp } from "lucide-react"
-import * as React from "react"
-import { useRef, useEffect } from "react"
-import { cn } from "@/lib/utils"
-import { motion } from "framer-motion"
+import * as React from "react";
+import { useRef, useEffect, useState } from "react";
+import { motion } from "framer-motion";
+import { ArrowUp } from "lucide-react";
+
+import { cn } from "@/lib/utils";
+import { Button } from "@/components/ui/button";
+import { Textarea } from "@/components/ui/textarea";
 
 interface ChatInputProps {
-    onSend: (message: string) => void
-    disabled?: boolean
+    onSend: (message: string) => void;
+    disabled?: boolean;
 }
 
-// 채팅 입력 컴포넌트: 사용자가 메시지를 입력하고 전송하는 영역입니다.
+/**
+ * 채팅 입력 컴포넌트: 사용자가 메시지를 입력하고 전송하는 영역입니다.
+ */
 export function ChatInput({ onSend, disabled }: ChatInputProps) {
-    const [input, setInput] = React.useState("")
-    const textareaRef = useRef<HTMLTextAreaElement>(null)
+    const [input, setInput] = useState("");
+    const textareaRef = useRef<HTMLTextAreaElement>(null);
 
     // 입력창 높이 자동 조절 기능
     useEffect(() => {
         if (textareaRef.current) {
-            textareaRef.current.style.height = 'auto'
-            textareaRef.current.style.height = `${textareaRef.current.scrollHeight}px`
+            textareaRef.current.style.height = "auto";
+            textareaRef.current.style.height = `${textareaRef.current.scrollHeight}px`;
         }
-    }, [input])
+    }, [input]);
 
     // 메시지 전송 처리: 입력된 메시지가 있을 경우 전송하고 입력창을 초기화합니다.
     const handleSend = () => {
         if (input.trim()) {
-            onSend(input)
-            setInput("")
+            onSend(input);
+            setInput("");
             if (textareaRef.current) {
-                textareaRef.current.style.height = 'auto'
+                textareaRef.current.style.height = "auto";
             }
         }
-    }
+    };
 
     // 엔터키 처리: Shift 없이 엔터만 눌렀을 때 메시지를 전송합니다.
     const handleKeyDown = (e: React.KeyboardEvent<HTMLTextAreaElement>) => {
         if (e.key === "Enter" && !e.shiftKey) {
-            e.preventDefault()
-            handleSend()
+            e.preventDefault();
+            handleSend();
         }
-    }
+    };
 
     const isEmpty = !input.trim();
 
@@ -81,5 +84,5 @@ export function ChatInput({ onSend, disabled }: ChatInputProps) {
                 Gemini는 실수를 할 수 있습니다. 중요한 정보를 확인하세요.
             </div>
         </div>
-    )
+    );
 }

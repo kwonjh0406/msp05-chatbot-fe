@@ -1,27 +1,32 @@
-import { ScrollArea } from "@/components/ui/scroll-area"
-import { ChatMessage, Message } from "./chat-message"
-import { useEffect, useRef } from "react"
-import { motion } from "framer-motion"
-import { Sparkles } from "lucide-react"
+import * as React from "react";
+import { useEffect, useRef } from "react";
+import { motion } from "framer-motion";
+import { Sparkles } from "lucide-react";
+
+import { cn } from "@/lib/utils";
+import { ScrollArea } from "@/components/ui/scroll-area";
+import { ChatMessage, Message } from "./chat-message";
 
 interface ChatListProps {
-    messages: Message[]
-    isLoading?: boolean
+    messages: Message[];
+    isLoading?: boolean;
 }
 
-// 채팅 목록 컴포넌트: 대화 메시지들을 리스트 형태로 보여주거나, 대화가 없을 때 초기 화면을 표시합니다.
+/**
+ * 채팅 목록 컴포넌트: 대화 메시지들을 리스트 형태로 보여주거나, 대화가 없을 때 초기 화면을 표시합니다.
+ */
 export function ChatList({ messages, isLoading }: ChatListProps) {
-    const bottomRef = useRef<HTMLDivElement>(null)
+    const bottomRef = useRef<HTMLDivElement>(null);
 
     // 새 메시지가 추가될 때마다 자동으로 스크롤을 최하단으로 이동합니다.
     useEffect(() => {
-        bottomRef.current?.scrollIntoView({ behavior: "smooth" })
-    }, [messages, isLoading])
+        bottomRef.current?.scrollIntoView({ behavior: "smooth" });
+    }, [messages, isLoading]);
 
     // 메시지가 없을 때 보여줄 초기 환영 화면 (Empty State)
     if (messages.length === 0) {
         return (
-            <div className="h-full w-full p-4 flex flex-col items-center justify-center -mt-20"> {/* -mt-20으로 시각적 중심 보정 */}
+            <div className="h-full w-full p-4 flex flex-col items-center justify-center md:-mt-20">
                 <div className="max-w-2xl w-full px-4 space-y-10">
                     {/* 환영 메시지 */}
                     <div className="text-center space-y-2">
@@ -51,19 +56,17 @@ export function ChatList({ messages, isLoading }: ChatListProps) {
                         className="grid grid-cols-1 md:grid-cols-2 gap-4"
                     >
                         {[
-                            { title: "Next.js의 장점", subtitle: "Next.js를 사용하면 어떤 점이 좋은가요?" },
-                            { title: "Dijkstra 알고리즘 코드", subtitle: "다익스트라 알고리즘 예제를 보여줘" },
-                            { title: "실리콘밸리 에세이", subtitle: "실리콘밸리에 대한 에세이를 써줘" },
-                            { title: "서울 날씨", subtitle: "오늘 서울 날씨는 어때?" }
+                            { title: "오늘 한국 증시", subtitle: "오늘 한국 증시 상황 알려줘" },
+                            { title: "내일 서울 날씨", subtitle: "내일 서울 날씨 어때?" },
+                            { title: "점심 메뉴 추천", subtitle: "점심 메뉴 추천해줘" },
+                            { title: "운동 루틴", subtitle: "운동 루틴 짜줘" }
                         ].map((card, index) => (
                             <motion.button
                                 key={index}
-                                initial={{ opacity: 0, scale: 0.95 }}
-                                animate={{ opacity: 1, scale: 1 }}
+                                initial={{ opacity: 0, y: 10 }}
+                                animate={{ opacity: 1, y: 0 }}
                                 transition={{ duration: 0.3, delay: 0.3 + index * 0.1 }}
-                                whileHover={{ scale: 1.02 }}
-                                whileTap={{ scale: 0.98 }}
-                                className="flex flex-col items-start gap-1 p-4 rounded-xl border border-zinc-200 bg-white hover:bg-zinc-50 hover:border-zinc-300 transition-colors text-left dark:bg-zinc-900 dark:border-zinc-800 dark:hover:bg-zinc-800"
+                                className="flex flex-col items-start gap-1 p-5 rounded-3xl border border-zinc-200 bg-white hover:bg-zinc-50 hover:border-zinc-300 transition-colors text-left dark:bg-zinc-900 dark:border-zinc-800 dark:hover:bg-zinc-800"
                             >
                                 <span className="text-sm font-semibold text-zinc-900 dark:text-zinc-100">
                                     {card.title}
@@ -76,7 +79,7 @@ export function ChatList({ messages, isLoading }: ChatListProps) {
                     </motion.div>
                 </div>
             </div>
-        )
+        );
     }
 
     return (
@@ -104,5 +107,5 @@ export function ChatList({ messages, isLoading }: ChatListProps) {
                 <div ref={bottomRef} />
             </div>
         </ScrollArea>
-    )
+    );
 }

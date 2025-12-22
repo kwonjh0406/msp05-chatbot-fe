@@ -1,20 +1,28 @@
-import { cn } from "@/lib/utils"
-import { Copy, ThumbsDown, ThumbsUp, Sparkles } from "lucide-react"
-import { Button } from "@/components/ui/button"
-import { motion } from "framer-motion"
+import * as React from "react";
+import { motion } from "framer-motion";
+import { Copy, Sparkles } from "lucide-react";
+
+import { cn } from "@/lib/utils";
+import { Button } from "@/components/ui/button";
 
 export interface Message {
-    role: "user" | "assistant"
-    content: string
+    role: "user" | "assistant";
+    content: string;
 }
 
 interface ChatMessageProps {
-    message: Message
+    message: Message;
 }
 
-// 채팅 메시지 컴포넌트: 개별 메시지의 디자인과 레이아웃(사용자/봇 구분)을 담당합니다.
+/**
+ * 채팅 메시지 컴포넌트: 개별 메시지의 디자인과 레이아웃(사용자/봇 구분)을 담당합니다.
+ */
 export function ChatMessage({ message }: ChatMessageProps) {
-    const isUser = message.role === "user"
+    const isUser = message.role === "user";
+
+    const handleCopy = () => {
+        navigator.clipboard.writeText(message.content);
+    };
 
     return (
         <motion.div
@@ -51,29 +59,18 @@ export function ChatMessage({ message }: ChatMessageProps) {
                 </div>
 
                 {/* ACTION ROW (Below Message) */}
-                <div className={cn("flex items-center gap-0.5 opacity-0 hover:opacity-100 transition-opacity duration-200", isUser ? "flex-row-reverse" : "flex-row")}>
-                    {isUser && (
-                        <Button variant="ghost" size="icon" className="h-6 w-6 text-zinc-400 hover:text-zinc-600 hover:bg-zinc-100 rounded-full dark:hover:bg-zinc-800">
-                            <Copy className="h-3 w-3" />
-                        </Button>
-                    )}
-
-                    {!isUser && (
-                        <>
-                            <Button variant="ghost" size="icon" className="h-6 w-6 text-zinc-400 hover:text-zinc-600 hover:bg-zinc-100 rounded-full dark:hover:bg-zinc-800">
-                                <Copy className="h-3 w-3" />
-                            </Button>
-                            <Button variant="ghost" size="icon" className="h-6 w-6 text-zinc-400 hover:text-zinc-600 hover:bg-zinc-100 rounded-full dark:hover:bg-zinc-800">
-                                <ThumbsUp className="h-3 w-3" />
-                            </Button>
-                            <Button variant="ghost" size="icon" className="h-6 w-6 text-zinc-400 hover:text-zinc-600 hover:bg-zinc-100 rounded-full dark:hover:bg-zinc-800">
-                                <ThumbsDown className="h-3 w-3" />
-                            </Button>
-                        </>
-                    )}
+                <div className={cn("flex items-center gap-0.5 opacity-50 hover:opacity-100 transition-opacity duration-200", isUser ? "flex-row-reverse" : "flex-row")}>
+                    <Button
+                        variant="ghost"
+                        size="icon"
+                        className="h-6 w-6 text-zinc-500 hover:text-zinc-700 dark:text-zinc-400 dark:hover:text-zinc-200"
+                        onClick={handleCopy}
+                    >
+                        <Copy className="h-3 w-3" />
+                    </Button>
                 </div>
 
             </div>
         </motion.div>
-    )
+    );
 }

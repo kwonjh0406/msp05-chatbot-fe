@@ -1,20 +1,23 @@
-"use client"
+"use client";
+import * as React from "react";
+import { useState } from "react";
+import { Menu, PanelLeftClose, PanelLeftOpen } from "lucide-react";
 
-import { useState } from "react"
-import { Sidebar } from "./sidebar"
-import { Button } from "@/components/ui/button"
-import { Menu, PanelLeftClose, PanelLeftOpen } from "lucide-react"
-import { cn } from "@/lib/utils"
+import { cn } from "@/lib/utils";
+import { Button } from "@/components/ui/button";
+import { Sidebar } from "./sidebar";
 
 interface ChatLayoutProps {
-    children: React.ReactNode
-    onNewChat?: () => void
+    children: React.ReactNode;
+    onNewChat?: () => void;
 }
 
-// 채팅 레이아웃 컴포넌트: 사이드바와 메인 콘텐츠 영역을 구성하며, 반응형 동작을 처리합니다.
+/**
+ * 채팅 레이아웃 컴포넌트: 사이드바와 메인 콘텐츠 영역을 구성하며, 반응형 동작을 처리합니다.
+ */
 export function ChatLayout({ children, onNewChat }: ChatLayoutProps) {
-    const [isSidebarOpen, setIsSidebarOpen] = useState(true)
-    const [isMobileSidebarOpen, setIsMobileSidebarOpen] = useState(false)
+    const [isSidebarOpen, setIsSidebarOpen] = useState(true);
+    const [isMobileSidebarOpen, setIsMobileSidebarOpen] = useState(false);
 
     return (
         <div className="flex h-screen w-full overflow-hidden bg-background">
@@ -40,7 +43,7 @@ export function ChatLayout({ children, onNewChat }: ChatLayoutProps) {
                 <div className="absolute top-4 left-4 z-20 flex items-center gap-2">
                     {/* Desktop Toggle: Distinct Button Style */}
                     <Button
-                        variant="outline" // Changed to outline
+                        variant="outline"
                         size="icon"
                         className="hidden md:flex h-9 w-9 bg-background/80 backdrop-blur-sm border-zinc-200 shadow-sm hover:bg-zinc-100 text-zinc-600 rounded-lg"
                         onClick={() => setIsSidebarOpen(!isSidebarOpen)}
@@ -63,5 +66,5 @@ export function ChatLayout({ children, onNewChat }: ChatLayoutProps) {
                 {children}
             </main>
         </div>
-    )
+    );
 }
