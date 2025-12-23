@@ -1,6 +1,6 @@
 import * as React from "react";
 import { motion } from "framer-motion";
-import { Copy, Sparkles } from "lucide-react";
+import { Copy, Bot } from "lucide-react";
 
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
@@ -36,8 +36,8 @@ export function ChatMessage({ message }: ChatMessageProps) {
         >
             {/* AVATAR (AI Only) */}
             {!isUser && (
-                <div className="h-9 w-9 shrink-0 flex items-center justify-center rounded-full border border-zinc-200 bg-white dark:border-zinc-700 dark:bg-zinc-800">
-                    <Sparkles className="h-4 w-4 text-blue-500 fill-blue-500" />
+                <div className="h-9 w-9 shrink-0 flex items-center justify-center rounded-full border border-stone-200 bg-white">
+                    <Bot className="h-4 w-4 text-stone-600" />
                 </div>
             )}
 
@@ -49,8 +49,8 @@ export function ChatMessage({ message }: ChatMessageProps) {
                     className={cn(
                         "px-3.5 py-2 text-[15px] leading-relaxed",
                         isUser
-                            ? "bg-zinc-100 text-zinc-900 rounded-2xl rounded-tr-md dark:bg-zinc-800 dark:text-zinc-100"
-                            : "bg-transparent text-zinc-800 dark:text-zinc-200 px-0"
+                            ? "bg-stone-100 text-stone-900 rounded-2xl rounded-tr-md"
+                            : "bg-transparent text-stone-800 px-0"
                     )}
                 >
                     <div className="whitespace-pre-wrap break-words min-w-0 -mt-0.5">
@@ -63,7 +63,7 @@ export function ChatMessage({ message }: ChatMessageProps) {
                     <Button
                         variant="ghost"
                         size="icon"
-                        className="h-6 w-6 text-zinc-500 hover:text-zinc-700 dark:text-zinc-400 dark:hover:text-zinc-200"
+                        className="h-6 w-6 text-stone-500 hover:text-stone-700"
                         onClick={handleCopy}
                     >
                         <Copy className="h-3 w-3" />
@@ -74,3 +74,4 @@ export function ChatMessage({ message }: ChatMessageProps) {
         </motion.div>
     );
 }
+

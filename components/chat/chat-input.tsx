@@ -50,14 +50,14 @@ export function ChatInput({ onSend, disabled }: ChatInputProps) {
 
     return (
         <div className="relative flex w-full flex-col items-center gap-3 p-4 pb-6">
-            <div className="relative flex w-full max-w-3xl items-center gap-3 rounded-3xl bg-white border border-zinc-200/60 px-4 py-2.5 transition-colors focus-within:border-zinc-300 dark:bg-zinc-900 dark:border-zinc-700/60 dark:focus-within:border-zinc-600">
+            <div className="relative flex w-full max-w-3xl items-center gap-3 rounded-3xl bg-white border border-stone-200/60 px-4 py-2.5 transition-colors focus-within:border-stone-300">
                 <Textarea
                     ref={textareaRef}
                     value={input}
                     onChange={(e) => setInput(e.target.value)}
                     onKeyDown={handleKeyDown}
                     placeholder="메시지를 입력하세요"
-                    className="flex-1 min-h-[36px] max-h-[160px] border-none bg-transparent shadow-none focus-visible:ring-0 text-[15px] leading-[22px] py-2 px-2 resize-none overflow-y-auto placeholder:text-zinc-400 font-normal"
+                    className="flex-1 min-h-[36px] max-h-[160px] border-none bg-transparent shadow-none focus-visible:ring-0 text-[15px] leading-[22px] py-2 px-2 resize-none overflow-y-auto placeholder:text-stone-400 font-normal"
                     disabled={disabled}
                     rows={1}
                 />
@@ -72,17 +72,18 @@ export function ChatInput({ onSend, disabled }: ChatInputProps) {
                         className={cn(
                             "h-9 w-9 rounded-full transition-colors shrink-0",
                             isEmpty
-                                ? "bg-zinc-100 text-zinc-400 hover:bg-zinc-200 disabled:opacity-100 dark:bg-zinc-800 dark:text-zinc-600"
-                                : "bg-black text-white hover:bg-zinc-700 dark:bg-white dark:text-black"
+                                ? "bg-stone-100 text-stone-400 hover:bg-stone-200 disabled:opacity-100"
+                                : "bg-stone-900 text-white hover:bg-stone-700"
                         )}
                     >
                         <ArrowUp className="h-4 w-4" />
                     </Button>
                 </motion.div>
             </div>
-            <div className="text-[10px] text-center text-zinc-400">
-                Gemini는 실수를 할 수 있습니다. 중요한 정보를 확인하세요.
+            <div className="text-[10px] text-center text-stone-400">
+                AI는 실수를 할 수 있습니다. 중요한 정보를 확인하세요.
             </div>
         </div>
     );
 }
+

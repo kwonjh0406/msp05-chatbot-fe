@@ -1,7 +1,7 @@
 import * as React from "react";
 import { useEffect, useRef } from "react";
 import { motion } from "framer-motion";
-import { Sparkles } from "lucide-react";
+import { Bot } from "lucide-react";
 
 import { cn } from "@/lib/utils";
 import { ScrollArea } from "@/components/ui/scroll-area";
@@ -34,7 +34,7 @@ export function ChatList({ messages, isLoading }: ChatListProps) {
                             initial={{ opacity: 0, y: -20 }}
                             animate={{ opacity: 1, y: 0 }}
                             transition={{ duration: 0.5, ease: "easeOut" }}
-                            className="text-3xl font-bold tracking-tight text-zinc-900 dark:text-zinc-100"
+                            className="text-3xl font-bold tracking-tight text-stone-900"
                         >
                             반갑습니다!
                         </motion.h1>
@@ -42,7 +42,7 @@ export function ChatList({ messages, isLoading }: ChatListProps) {
                             initial={{ opacity: 0, y: -10 }}
                             animate={{ opacity: 1, y: 0 }}
                             transition={{ duration: 0.5, delay: 0.1, ease: "easeOut" }}
-                            className="text-lg text-zinc-500 dark:text-zinc-400"
+                            className="text-lg text-stone-500"
                         >
                             무엇을 도와드릴까요?
                         </motion.p>
@@ -66,12 +66,12 @@ export function ChatList({ messages, isLoading }: ChatListProps) {
                                 initial={{ opacity: 0, y: 10 }}
                                 animate={{ opacity: 1, y: 0 }}
                                 transition={{ duration: 0.3, delay: 0.3 + index * 0.1 }}
-                                className="flex flex-col items-start gap-1 p-5 rounded-3xl border border-zinc-200 bg-white hover:bg-zinc-50 hover:border-zinc-300 transition-colors text-left dark:bg-zinc-900 dark:border-zinc-800 dark:hover:bg-zinc-800"
+                                className="flex flex-col items-start gap-1 p-5 rounded-3xl border border-stone-200 bg-white hover:bg-stone-50 hover:border-stone-300 transition-colors text-left"
                             >
-                                <span className="text-sm font-semibold text-zinc-900 dark:text-zinc-100">
+                                <span className="text-sm font-semibold text-stone-900">
                                     {card.title}
                                 </span>
-                                <span className="text-xs text-zinc-500 dark:text-zinc-400">
+                                <span className="text-xs text-stone-500">
                                     {card.subtitle}
                                 </span>
                             </motion.button>
@@ -94,11 +94,11 @@ export function ChatList({ messages, isLoading }: ChatListProps) {
                         animate={{ opacity: 1, y: 0 }}
                         className="flex w-full gap-3 py-2.5 md:px-0 max-w-3xl mx-auto items-start flex-row"
                     >
-                        <div className="h-9 w-9 shrink-0 flex items-center justify-center rounded-full border border-zinc-200 bg-white dark:border-zinc-700 dark:bg-zinc-800">
-                            <Sparkles className="h-4 w-4 text-blue-500 fill-blue-500" />
+                        <div className="h-9 w-9 shrink-0 flex items-center justify-center rounded-full border border-stone-200 bg-white">
+                            <Bot className="h-4 w-4 text-stone-600" />
                         </div>
                         <div className="flex max-w-[85%] flex-col gap-1 min-w-0 items-start">
-                            <div className="px-0 py-2 text-[15px] leading-relaxed bg-transparent text-zinc-400 dark:text-zinc-500">
+                            <div className="px-0 py-2 text-[15px] leading-relaxed bg-transparent text-stone-400">
                                 생각 중...
                             </div>
                         </div>
@@ -109,3 +109,4 @@ export function ChatList({ messages, isLoading }: ChatListProps) {
         </ScrollArea>
     );
 }
+

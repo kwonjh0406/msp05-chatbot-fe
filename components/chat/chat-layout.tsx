@@ -45,7 +45,7 @@ export function ChatLayout({ children, onNewChat }: ChatLayoutProps) {
                     <Button
                         variant="outline"
                         size="icon"
-                        className="hidden md:flex h-9 w-9 bg-background/80 backdrop-blur-sm border-zinc-200 shadow-sm hover:bg-zinc-100 text-zinc-600 rounded-lg"
+                        className="hidden md:flex h-9 w-9 bg-background/80 backdrop-blur-sm border-stone-200 shadow-sm hover:bg-stone-100 text-stone-600 rounded-lg"
                         onClick={() => setIsSidebarOpen(!isSidebarOpen)}
                         title={isSidebarOpen ? "사이드바 닫기" : "사이드바 열기"}
                     >
