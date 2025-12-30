@@ -59,15 +59,15 @@ spec:
         stage('3. K8s 배포 업데이트') {
             steps {
                 sh '''
-                  echo "=== deploy.yaml (before) ==="
-                  cat deploy.yaml
+                  echo "=== k8s-deployment.yaml (before) ==="
+                  cat k8s-deployment.yaml
 
-                  sed -i "s/IMAGE_TAG/${BUILD_NUMBER}/g" deploy.yaml
+                  sed -i "s/IMAGE_TAG/${BUILD_NUMBER}/g" k8s-deployment.yaml
 
-                  echo "=== deploy.yaml (after) ==="
-                  cat deploy.yaml
+                  echo "=== k8s-deployment.yaml (after) ==="
+                  cat k8s-deployment.yaml
 
-                  kubectl apply -f deploy.yaml -n default
+                  kubectl apply -f k8s-deployment.yaml -n chatbot
                 '''
             }
         }
