@@ -20,7 +20,12 @@ spec:
         }
     }
 
+    environment {
+        IMAGE_NAME = "kwonjh0406/chatbot-fe"
+    }
+
     stages {
+
         stage('1. 코드 가져오기') {
             steps {
                 checkout scm
@@ -29,11 +34,20 @@ spec:
 
         stage('2. 도커 이미지 빌드 및 푸시') {
             steps {
-                script {
-                    // docker-auth는 아까 Jenkins Credentials에 등록한 ID입니다.
-                    docker.withRegistry('', 'docker-auth') {
-                        def appImage = docker.build("<도커ID>/myapp:${env.BUILD_NUMBER}")
-                        appImage.push()
+                container('docker') {
+                    withCredentials([
+                        usernamePassword(
+                            credentialsId: 'docker-auth',
+                            usernameVariable: 'DOCKER_USERNAME',
+                            passwordVariable: 'DOCKER_PASSWORD'
+                        )
+                    ]) {
+                        sh '''
+                          docker info
+                          docker build -t $IMAGE_NAME:${BUILD_NUMBER} .
+                          echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_USERNAME" --password-stdin
+                          docker push $IMAGE_NAME:${BUILD_NUMBER}
+                        '''
                     }
                 }
             }
@@ -41,12 +55,17 @@ spec:
 
         stage('3. K8s 배포 업데이트') {
             steps {
-                script {
-                    // yaml 파일 안의 IMAGE_TAG 글자를 현재 빌드 번호로 바꿉니다.
-                    sh "sed -i 's/IMAGE_TAG/${env.BUILD_NUMBER}/g' k8s-deploy.yaml"
-                    // 권한 설정을 미리 했으므로 바로 적용 가능합니다.
-                    sh "kubectl apply -f k8s-deploy.yaml -n admin"
-                }
+                sh '''
+                  echo "=== deploy.yaml (before) ==="
+                  cat deploy.yaml
+
+                  sed -i "s/IMAGE_TAG/${BUILD_NUMBER}/g" deploy.yaml
+
+                  echo "=== deploy.yaml (after) ==="
+                  cat deploy.yaml
+
+                  kubectl apply -f deploy.yaml -n default
+                '''
             }
         }
     }
