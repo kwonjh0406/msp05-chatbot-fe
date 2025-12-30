@@ -1,7 +1,8 @@
+
 "use client";
 import * as React from "react";
 import Link from "next/link";
-import { Plus, LogOut, Settings } from "lucide-react";
+import { Plus, LogOut, Trash2 } from "lucide-react";
 
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
@@ -9,6 +10,10 @@ import { ScrollArea } from "@/components/ui/scroll-area";
 import { Sheet, SheetContent, SheetHeader, SheetTitle } from "@/components/ui/sheet";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+
+import api from "@/lib/api";
+import { useEffect, useState } from "react";
+import { useRouter, useSearchParams } from "next/navigation";
 
 interface SidebarProps {
     isOpen: boolean;
@@ -18,10 +23,71 @@ interface SidebarProps {
     onNewChat?: () => void;
 }
 
-/**
- * 사이드바 컴포넌트: 대화 목록 및 사용자 프로필 관리 기능을 제공합니다.
- */
+interface ChatRoom {
+    id: number;
+    title: string;
+}
+
 export function Sidebar({ isOpen, onClose, isMobile, className, onNewChat }: SidebarProps) {
+    const router = useRouter();
+    const searchParams = useSearchParams();
+    const currentRoomId = searchParams.get("roomId");
+
+    const [chatRooms, setChatRooms] = useState<ChatRoom[]>([]);
+
+    const fetchChatRooms = async () => {
+        try {
+            const response = await api.get("/chat/rooms");
+            setChatRooms(response.data);
+        } catch (error: any) {
+            if (error.response && (error.response.status === 403 || error.response.status === 401)) {
+                setChatRooms([]);
+            } else {
+                console.error("Failed to fetch chat rooms", error);
+            }
+        }
+    };
+
+    useEffect(() => {
+        if (isOpen) {
+            fetchChatRooms();
+        }
+    }, [isOpen]);
+
+    const handleChatClick = (roomId: number) => {
+        router.push(`/?roomId=${roomId}`);
+        if (isMobile) onClose();
+    }
+
+    const [deleteConfirmId, setDeleteConfirmId] = useState<number | null>(null);
+
+    const handleDeleteRoom = async (roomId: number) => {
+        // e.stopPropagation() is handled in the trigger
+
+        try {
+            await api.delete(`/chat/rooms/${roomId}`);
+            // 목록에서 제거
+            setChatRooms((prev) => prev.filter((room) => room.id !== roomId));
+
+            // 현재 보고 있는 방을 삭제한 경우 홈으로 이동
+            if (currentRoomId && parseInt(currentRoomId) === roomId) {
+                router.push("/");
+            }
+            setDeleteConfirmId(null);
+        } catch (error) {
+            console.error("Failed to delete room", error);
+        }
+    }
+
+    const handleLogout = async () => {
+        try {
+            await api.post("/auth/logout");
+            router.push("/login");
+        } catch (error) {
+            console.error("Logout failed", error);
+        }
+    }
+
     const SidebarContent = (
         <div className={cn("flex h-full flex-col bg-stone-50 border-r border-stone-200/50", className)}>
             {/* 앱 타이틀 영역 */}
@@ -48,16 +114,83 @@ export function Sidebar({ isOpen, onClose, isMobile, className, onNewChat }: Sid
                             최근
                         </h2>
                         <div className="space-y-0.5">
-                            {["오늘 한국 증시 상황 알려줘", "내일 서울 날씨 어때?", "점심 메뉴 추천해줘", "운동 루틴 짜줘"].map((chat, i) => (
-                                <Button
-                                    key={i}
-                                    variant="ghost"
-                                    className="w-full justify-start h-9 px-3 text-[13px] text-stone-600 hover:text-stone-900 hover:bg-stone-200/50 rounded-lg transition-colors"
-                                    onClick={onNewChat}
-                                >
-                                    <span className="truncate">{chat}</span>
-                                </Button>
-                            ))}
+                            {chatRooms.map((room) => {
+                                const isActive = currentRoomId && parseInt(currentRoomId) === room.id;
+
+                                return (
+                                    <div
+                                        key={room.id}
+                                        className={cn(
+                                            "group flex items-center justify-between rounded-lg transition-colors",
+                                            isActive
+                                                ? "bg-stone-200/70"
+                                                : "hover:bg-stone-200/50"
+                                        )}
+                                    >
+                                        <Button
+                                            variant="ghost"
+                                            className={cn(
+                                                "flex-1 justify-start h-9 px-3 text-[13px] hover:bg-transparent rounded-lg transition-colors",
+                                                isActive
+                                                    ? "text-stone-900 font-medium"
+                                                    : "text-stone-600 hover:text-stone-900"
+                                            )}
+                                            onClick={() => handleChatClick(room.id)}
+                                        >
+                                            <span className="truncate">{room.title}</span>
+                                        </Button>
+                                        <Popover
+                                            open={deleteConfirmId === room.id}
+                                            onOpenChange={(isOpen) => {
+                                                if (isOpen) setDeleteConfirmId(room.id);
+                                                else setDeleteConfirmId(null);
+                                            }}
+                                        >
+                                            <PopoverTrigger asChild>
+                                                <Button
+                                                    variant="ghost"
+                                                    size="icon"
+                                                    className="h-7 w-7 mr-1 opacity-0 group-hover:opacity-100 transition-opacity text-stone-400 hover:text-red-500 hover:bg-red-50"
+                                                    onClick={(e) => {
+                                                        e.stopPropagation();
+                                                        setDeleteConfirmId(room.id);
+                                                    }}
+                                                >
+                                                    <Trash2 className="h-3.5 w-3.5" />
+                                                </Button>
+                                            </PopoverTrigger>
+                                            <PopoverContent
+                                                side="right"
+                                                align="start"
+                                                className="w-48 p-1.5 bg-white border-stone-100 shadow-xl rounded-lg"
+                                                onClick={(e) => e.stopPropagation()}
+                                            >
+                                                <div className="flex flex-col gap-1">
+                                                    <div className="px-2 py-1.5 text-[13px] font-medium text-stone-700 text-center">
+                                                        삭제하시겠습니까?
+                                                    </div>
+                                                    <div className="flex gap-1">
+                                                        <Button
+                                                            variant="ghost"
+                                                            className="flex-1 h-8 text-[12px] text-stone-500 hover:text-stone-900 hover:bg-stone-100 rounded-md"
+                                                            onClick={() => setDeleteConfirmId(null)}
+                                                        >
+                                                            취소
+                                                        </Button>
+                                                        <Button
+                                                            variant="ghost"
+                                                            className="flex-1 h-8 text-[12px] text-red-500 hover:text-red-600 hover:bg-red-50 rounded-md font-medium"
+                                                            onClick={() => handleDeleteRoom(room.id)}
+                                                        >
+                                                            삭제
+                                                        </Button>
+                                                    </div>
+                                                </div>
+                                            </PopoverContent>
+                                        </Popover>
+                                    </div>
+                                );
+                            })}
                         </div>
                     </div>
                 </div>
@@ -69,27 +202,22 @@ export function Sidebar({ isOpen, onClose, isMobile, className, onNewChat }: Sid
                         <Button variant="ghost" className="w-full justify-start gap-3 h-14 px-3 bg-stone-700/5 hover:bg-stone-700/10 border-none transition-all shadow-none group rounded-lg">
                             <Avatar className="h-9 w-9 border-none ring-0">
                                 <AvatarImage src="" />
-                                <AvatarFallback className="text-xs font-bold bg-white/80 text-stone-700">게</AvatarFallback>
+                                <AvatarFallback className="text-xs font-bold bg-white/80 text-stone-700">ME</AvatarFallback>
                             </Avatar>
                             <div className="flex flex-col items-start text-xs text-left">
-                                <span className="font-bold text-[14px] text-stone-700 group-hover:text-stone-900 transition-colors">게스트</span>
-                                <span className="text-stone-500 font-medium">무료 플랜</span>
+                                <span className="font-bold text-[14px] text-stone-700 group-hover:text-stone-900 transition-colors">내 계정</span>
                             </div>
                         </Button>
                     </PopoverTrigger>
                     <PopoverContent className="w-60 p-1.5 mb-2 bg-white border-stone-100 shadow-xl rounded-lg" align="start" side="top">
-                        <Link href="/login" className="w-full block">
-                            <Button variant="ghost" className="w-full justify-start gap-2 h-10 px-3 text-[13px] font-medium text-stone-600 rounded-lg hover:bg-stone-100">
-                                <Settings className="h-4 w-4 text-stone-500" />
-                                설정
-                            </Button>
-                        </Link>
-                        <Link href="/login" className="w-full block">
-                            <Button variant="ghost" className="w-full justify-start gap-2 h-10 px-3 text-[13px] font-medium text-red-500 hover:text-red-600 hover:bg-red-50 rounded-lg">
-                                <LogOut className="h-4 w-4" />
-                                로그아웃
-                            </Button>
-                        </Link>
+                        <Button
+                            variant="ghost"
+                            className="w-full justify-start gap-2 h-10 px-3 text-[13px] font-medium text-red-500 hover:text-red-600 hover:bg-red-50 rounded-lg"
+                            onClick={handleLogout}
+                        >
+                            <LogOut className="h-4 w-4" />
+                            로그아웃
+                        </Button>
                     </PopoverContent>
                 </Popover>
             </div>
