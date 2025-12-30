@@ -19,8 +19,8 @@ spec:
       mountPath: /var/lib/docker
   - name: kubectl
     image: bitnami/kubectl:latest
-    command:
-    - cat
+    command: ["/bin/sh", "-c"]
+    args: ["cat"]
     tty: true
   volumes:
   - name: dind-storage
@@ -65,7 +65,10 @@ spec:
             steps {
                 container('kubectl') {
                     sh '''
+                      # k8s-deployment.yaml 파일 내의 IMAGE_TAG를 현재 빌드 번호로 교체
                       sed -i "s/IMAGE_TAG/${BUILD_NUMBER}/g" k8s-deployment.yaml
+                      
+                      # 수정한 파일로 쿠버네티스 배포 적용
                       kubectl apply -f k8s-deployment.yaml -n chatbot
                     '''
                 }
