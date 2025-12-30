@@ -15,7 +15,11 @@ COPY --from=deps /app/node_modules ./node_modules
 # 전체 소스 코드 복사 (이때 .dockerignore에 public이 없어야 함)
 COPY . .
 
+# Docker 빌드임을 표시하여 standalone 모드 활성화
+ENV DOCKER_BUILD=true
+
 # Next.js 빌드 수행 (next.config.ts에 output: 'standalone' 설정이 있어야 함)
+# .env.production 파일이 자동으로 포함되어 빌드 시 사용됨
 RUN corepack enable && pnpm run build
 
 # 4. Runner
