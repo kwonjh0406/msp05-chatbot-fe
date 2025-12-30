@@ -32,7 +32,6 @@ RUN adduser --system --uid 1001 nextjs
 # [핵심 수정] standalone 결과물을 먼저 복사한 후, public과 static을 수동으로 복사
 COPY --from=builder --chown=nextjs:nodejs /app/.next/standalone ./
 COPY --from=builder --chown=nextjs:nodejs /app/.next/static ./.next/static
-COPY --from=builder --chown=nextjs:nodejs /app/public ./public
 
 USER nextjs
 
