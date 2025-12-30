@@ -18,9 +18,8 @@ spec:
     - name: dind-storage
       mountPath: /var/lib/docker
   - name: kubectl
-    image: bitnami/kubectl:latest
-    command: ["/bin/sh", "-c"]
-    args: ["cat"]
+    image: alpine/k8s:1.27.3
+    command: ["cat"]
     tty: true
   volumes:
   - name: dind-storage
@@ -51,7 +50,6 @@ spec:
                         )
                     ]) {
                         sh '''
-                          docker info
                           docker build -t $IMAGE_NAME:${BUILD_NUMBER} .
                           echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_USERNAME" --password-stdin
                           docker push $IMAGE_NAME:${BUILD_NUMBER}
@@ -65,10 +63,7 @@ spec:
             steps {
                 container('kubectl') {
                     sh '''
-                      # k8s-deployment.yaml 파일 내의 IMAGE_TAG를 현재 빌드 번호로 교체
                       sed -i "s/IMAGE_TAG/${BUILD_NUMBER}/g" k8s-deployment.yaml
-                      
-                      # 수정한 파일로 쿠버네티스 배포 적용
                       kubectl apply -f k8s-deployment.yaml -n chatbot
                     '''
                 }
