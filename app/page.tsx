@@ -99,16 +99,14 @@ function ChatContent() {
       let roomId = currentRoomId
 
       // 새 채팅방 생성
+      let isNewRoom = false
       if (!roomId) {
         const createRes = await api.post("/chat/rooms")
         roomId = createRes.data.id
+        isNewRoom = true
 
         // 플래그 설정: 이 방은 내가 방금 만들었으니 메시지 재로드하지 마라
         justCreatedRoomRef.current = roomId
-
-        setCurrentRoomId(roomId)
-        // URL만 조용히 업데이트
-        router.replace(`/?roomId=${roomId}`, { scroll: false })
       }
 
       // 메시지 전송
@@ -116,6 +114,12 @@ function ChatContent() {
         const response = await api.post(`/chat/rooms/${roomId}/send`, { content })
         const botMessage: Message = { role: "assistant", content: response.data.content }
         setMessages((prev) => [...prev, botMessage])
+
+        // 새 채팅방인 경우, 메시지 전송 성공 후에 state와 URL 업데이트
+        if (isNewRoom) {
+          setCurrentRoomId(roomId)
+          router.replace(`/?roomId=${roomId}`, { scroll: false })
+        }
       }
     } catch (error: any) {
       if (error.response && (error.response.status === 403 || error.response.status === 401)) {
